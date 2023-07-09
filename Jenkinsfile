@@ -12,17 +12,17 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'docker build -t akramulislam/python-docker-cicd .'
-            }
-        }
-
         stage('Login') {
             steps {
                 withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_US', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
                     sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_US --password-stdin'
                 }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'docker build -t akramulislam/python-docker-cicd .'
             }
         }
 
