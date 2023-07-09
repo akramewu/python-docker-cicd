@@ -3,12 +3,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('akramulislam-dockerhub')
-    }
-
-    docker{
-            image 'docker'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }       
+    }    
 
     stages {
         stage('Checkout') {
