@@ -10,6 +10,9 @@ pipeline {
             steps {
                 sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
                 sh 'sh get-docker.sh'
+                sh 'usermod -aG docker jenkins'
+                sh 'service docker restart'
+                sh 'docker version'
             }
         }
         
