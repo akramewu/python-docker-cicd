@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-credentials')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,7 +14,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t akramulislam/python-docker-cicd .'
+
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                        docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+                        sh 'docker build -t akramulislam/python-docker-cicd .'
+                    '''
+                
             }
         }
     }
