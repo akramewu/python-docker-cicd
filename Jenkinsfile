@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKERHUB_USERNAME = credentials('dockerhub-credentials').username
+        DOCKERHUB_PASSWORD = credentials('dockerhub-credentials').password
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -15,10 +20,6 @@ pipeline {
         }
 
         stage('Push') {
-            environment {
-                DOCKERHUB_USERNAME = credentials('dockerhub-credentials').username
-                DOCKERHUB_PASSWORD = credentials('dockerhub-credentials').password
-            }
             steps {
                 withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKERHUB_PASSWORD')]) {
                     sh 'docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD'
