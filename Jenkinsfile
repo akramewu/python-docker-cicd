@@ -34,8 +34,12 @@ pipeline {
     }
 
     post {
-        always {
+    always {
+        node {
+            // Your post-build code here
             sh 'docker logout'
         }
     }
+  }
+
 }
