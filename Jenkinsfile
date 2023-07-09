@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKER_REGISTRY_CREDENTIALS = credentials('akramulislam-dockerhub')
     }
 
     stages {
@@ -12,6 +12,18 @@ pipeline {
             }
         }
 
+        stage('Build'){
+             steps{
+                sh 'docker build -t akramulislam/python-docker-cicd .'
+             }
+        }
+
+         stage('Login'){
+             steps{
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_US --password-stdin'
+             }
+        }
+        /*
         stage('Build') {
             steps {
 
@@ -23,6 +35,12 @@ pipeline {
                 
             }
         }
+    }
+    */
+ }
+ post{
+    always{
+        sh 'docker logout'
     }
  }
 }
