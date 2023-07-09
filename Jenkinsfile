@@ -12,35 +12,30 @@ pipeline {
             }
         }
 
-        stage('Build'){
-             steps{
-                sh 'docker build -t akramulislam/python-docker-cicd .'
-             }
-        }
-
-         stage('Login'){
-             steps{
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_US --password-stdin'
-             }
-        }
-        /*
         stage('Build') {
             steps {
+                sh 'docker build -t akramulislam/python-docker-cicd .'
+            }
+        }
 
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh '''
-                        docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-                        sh 'docker build -t akramulislam/python-docker-cicd .'
-                    '''
-                
+        stage('Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_US', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
+                    sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_US --password-stdin'
+                }
+            }
+        }
+
+        stage('Push') {
+            steps {
+                sh 'docker push akramulislam/python-docker-cicd'
             }
         }
     }
-    */
- }
- post{
-    always{
-        sh 'docker logout'
+
+    post {
+        always {
+            sh 'docker logout'
+        }
     }
- }
 }
