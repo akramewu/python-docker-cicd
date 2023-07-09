@@ -15,10 +15,10 @@ pipeline {
         stage('Build') {
             steps {
 
-                withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
-                        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-                        docker build -t akramulislam/python-docker-cicd .
+                        docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+                        sh 'docker build -t akramulislam/python-docker-cicd .'
                     '''
                 
             }
