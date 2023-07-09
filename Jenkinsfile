@@ -34,12 +34,12 @@ pipeline {
     }
 
     post {
-    always {
-        node {
-            // Your post-build code here
-            sh 'docker logout'
+        always {
+            node(currentBuild.getBuiltOn()) {
+                // Your post-build code here
+                sh 'docker logout'
+            }
         }
     }
-  }
 
 }
