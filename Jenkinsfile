@@ -35,7 +35,7 @@ pipeline {
 
     post {
         always {
-            node(currentBuild.getBuiltOn()) {
+            node(env.NODE_NAME) {
                 // Your post-build code here
                 sh 'docker logout'
             }
