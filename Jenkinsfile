@@ -1,24 +1,13 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'jdk'
-            yaml '''
-apiVersion: v1
-kind: Pod
-spec:
-  containers:
-  - name: jdk
-    image: openjdk:8
-    command:
-    - cat
-    tty: true
-'''
+            defaultContainer 'docker'
         }
     }
     stages {
-        stage('Build & Check') {
+        stage('Build & Check Docker Version') {
             steps {
-                sh 'java -version'
+                sh 'docker -version'
             }
         }
 
