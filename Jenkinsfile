@@ -40,7 +40,7 @@ pipeline {
         }
         */
     }
-
+/*
     post {
         always {
             node(env.NODE_NAME) {
@@ -49,5 +49,5 @@ pipeline {
             }
         }
     }
-
+*/
 }
