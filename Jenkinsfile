@@ -5,10 +5,11 @@
 pipeline {
     agent any
 
+/*
     environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('internalsapartifactory')
     }
-
+*/
     stages {
         stage('Checkout') {
             steps {
