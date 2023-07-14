@@ -1,0 +1,18 @@
+general:
+  buildTool: docker
+  dockerCredentialsId: DMZ-docker-pschaoseng-cred2
+  dockerImageName: tools/node_net_attack
+  dockerRegistryUrl: https://slvi.common.repositories.cloud.sap
+  githubApiUrl: https://github.tools.sap/api/v3
+  gitHttpsCredentialsId: pschaoseng-serviceuser_github_tools
+  verbose: true
+stages:
+  kanikoExecute:
+    containerPreparationCommand: 'rm -f /kaniko/.docker/config.json'
+    dockerImage: 'docker.wdf.sap.corp:50000/piper/kaniko:latest'
+    customTlsCertificateLinks:
+      - http://aia.pki.co.sap.com/aia/SAPNetCA_G2.crt
+      - http://aia.pki.co.sap.com/aia/SAP%20Global%20Root%20CA.crt
+steps:
+  mailSendNotification:
+    notificationRecipients: 'DL_601408650E5E66027E881554@global.corp.sap'
