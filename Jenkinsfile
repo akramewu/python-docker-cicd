@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('akramulislam-dockerhub')
+        DOCKER_REGISTRY_CREDENTIALS = credentials('internalsapartifactory')
     }    
 
     stages {
@@ -14,10 +14,17 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'docker build -t akramulislam/python-docker-cicd .'
+                kanikoExecute(
+                    script:this,
+                    buildOptions: ['--destination=slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg:v1'],
+                    containerImageNameAndTag: 'slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg:v1',
+                    dockerConfigJsonCredentialsId: 'internalsapartifactory'
+                )
+                //sh 'docker build -t akramulislam/python-docker-cicd .'
             }
         }
-
+    
+    /*
         stage('Login') {
             steps {
                 withCredentials([usernamePassword(credentialsId: "${DOCKER_REGISTRY_CREDENTIALS}", usernameVariable: 'DOCKERHUB_CREDENTIALS_US', passwordVariable: 'DOCKERHUB_CREDENTIALS_PSW')]) {
@@ -31,6 +38,7 @@ pipeline {
                 sh 'docker push akramulislam/python-docker-cicd'
             }
         }
+        */
     }
 
     post {
