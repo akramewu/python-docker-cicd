@@ -1,3 +1,4 @@
+@Library(['piper-lib', 'piper-lib-os']) _
 pipeline {
     agent any
 
