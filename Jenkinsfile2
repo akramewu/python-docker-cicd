@@ -1,40 +1,28 @@
-@Library(['piper-lib']) _
-
 pipeline {
     agent any
 
-    // Define environment variables here, if needed
-    environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('internalsapartifactory')
+    stages {
+        stage('Checkout') {
+            steps {
+                // Replace the repository URL and credentials with your project's details
+                git branch: 'main', credentialsId: '308e2027-1806-4707-8315-370d442691f9', url: 'https://github.com/akramewu/python-docker-cicd.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Replace this with your actual build command
+                sh 'echo "Building the project..."'
+            }
+        }
     }
 
-    stages {
-        stage('Build and Push Docker Image') {
-            steps {
-                script {
-                    // Docker image destination and tag
-                    def imageName = 'slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg'
-                    def imageTag = 'v1'
-
-                    // Full image name with tag
-                    def imageFullName = "${imageName}:${imageTag}"
-
-                    // Path to your Dockerfile relative to Jenkins workspace
-                    def dockerfilePath = './path/to/Dockerfile'
-
-                    // Docker registry credentials ID for authentication
-                    def dockerRegistryCredentialsId = 'internalsapartifactory'
-
-                    // Build the Docker image using kanikoExecute
-                    kanikoExecute(
-                        script: this,
-                        dockerfilePath: dockerfilePath,
-                        buildOptions: ['--destination=' + imageFullName],
-                        containerImageNameAndTag: imageFullName,
-                        dockerConfigJsonCredentialsId: dockerRegistryCredentialsId
-                    )
-                }
-            }
+    post {
+        success {
+            echo "Build successful! Deploy or perform further actions here."
+        }
+        failure {
+            echo "Build failed! Notify or perform cleanup tasks here."
         }
     }
 }
