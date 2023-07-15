@@ -1,33 +1,37 @@
-#!/usr/bin/env groovy
-
-@Library(['piper-lib', 'piper-lib-os']) _
+@Library(['piper-lib']) _
 
 pipeline {
     agent any
 
-/*
     environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('internalsapartifactory')
+        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-registry-credentials')
     }
-*/
+
     stages {
         stage('Checkout') {
             steps {
-                deleteDir()
-                git branch: 'main', credentialsId: '308e2027-1806-4707-8315-370d442691f9', url: 'https://github.com/akramewu/python-docker-cicd.git'
-                setupPipelineEnvironment script: this
+                // Your code to checkout the source code repository goes here
+                // For example: git branch: 'main', credentialsId: 'your-git-credentials', url: 'https://github.com/your/repository.git'
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                kanikoExecute(
-                    script: this,
-                    buildOptions: ['--destination=slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg:v1'],
-                    containerImageNameAndTag: 'slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg:v1',
-                    dockerConfigJsonCredentialsId: 'internalsapartifactory'
-                )
-                // sh 'docker build -t akramulislam/python-docker-cicd .'
+                script {
+                    def dockerfilePath = './path/to/Dockerfile'
+                    def imageName = 'your-docker-registry/your-image-name'
+                    def imageTag = 'your-image-tag'
+                    def dockerConfigJsonCredentialsId = 'docker-registry-credentials'
+
+                    kanikoExecute(
+                        script: this,
+                        dockerfilePath: dockerfilePath,
+                        buildArgs: '--build-arg KEY=VALUE', // Optional, if you have build arguments
+                        buildOptions: ['--destination=' + imageName + ':' + imageTag],
+                        containerImageNameAndTag: imageName + ':' + imageTag,
+                        dockerConfigJsonCredentialsId: dockerConfigJsonCredentialsId
+                    )
+                }
             }
         }
     }

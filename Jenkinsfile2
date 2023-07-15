@@ -1,24 +1,47 @@
-@Library(['piper-lib-os', 'piper-lib']) _
+@Library(['piper-lib']) _
+
 pipeline {
-  agent any
-	environment {
+    agent any
+
+    environment {
         DOCKER_REGISTRY_CREDENTIALS = credentials('internalsapartifactory')
     }
-	stages{
-		stage('prepare') {
-			steps{
-				checkout scm
-				setupCommonPipelineEnvironment script:this
-			}
-		}
-    stage('Docker Build') {
-			steps{
-                kanikoExecute(
-                    script: this,
-                    buildOptions: ['--destination=slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg:v1'],
-                    containerImageNameAndTag: 'slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg:v1',
-                    dockerConfigJsonCredentialsId: 'internalsapartifactory'
-                )
-			}
-		}
-	}
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Your code to checkout the source code repository goes here
+                // For example: git branch: 'main', credentialsId: 'your-git-credentials', url: 'https://github.com/your/repository.git'
+                git branch: 'main', credentialsId: '308e2027-1806-4707-8315-370d442691f9', url: 'https://github.com/akramewu/python-docker-cicd.git'
+            }
+        }
+
+        stage('Build and Push Docker Image') {
+            steps {
+                script {
+                    // Docker image destination and tag
+                    def imageName = 'slvtestdemo.int.repositories.cloud.sap/imgFolder/testImg'
+                    def imageTag = 'v1'
+
+                    // Full image name with tag
+                    def imageFullName = "${imageName}:${imageTag}"
+
+                    // Path to your Dockerfile relative to Jenkins workspace
+                    def dockerfilePath = './path/to/Dockerfile'
+
+                    // Docker registry credentials ID for authentication
+                    def dockerRegistryCredentialsId = 'internalsapartifactory'
+
+                    // Build the Docker image using kanikoExecute
+                    kanikoExecute(
+                        script: this,
+                        dockerfilePath: dockerfilePath,
+                        buildOptions: ['--destination=' + imageFullName],
+                        containerImageNameAndTag: imageFullName,
+                        dockerConfigJsonCredentialsId: dockerRegistryCredentialsId
+                    )
+                }
+            }
+        }
+    }
+}
